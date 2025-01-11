@@ -1,0 +1,35 @@
+.carouselItem {
+    display: flex;
+    flex-direction: column;
+    object-fit: contain;
+    padding: 10px;
+  }
+  .carouselItem__img {
+    border-radius: 10px;
+    margin-bottom: 5px;
+    box-shadow: 0px 0px 5px black;
+  }
+
+  .carouselItem__img__few {
+    border-radius: 10px;
+    margin-bottom: 5px;
+    box-shadow: 0px 0px 5px black;
+    width: 35%; 
+    height: 35%;
+  }
+
+  @media (min-width: 2300px) {
+    .carouselItem__img__few {
+      border-radius: 10px;
+      margin-bottom: 5px;
+      box-shadow: 0px 0px 5px black;
+      width: 25%; 
+      height: 25%;
+    }
+  }
+
+  .carouselItem__img:hover, .carouselItem__img__few:hover {
+    -webkit-filter: grayscale(100%); 
+    filter: grayscale(100%);
+
+  }
