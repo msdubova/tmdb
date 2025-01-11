@@ -13,7 +13,7 @@ import "./ContentModal.css";
 import { Button } from "@material-ui/core";
 import YouTubeIcon from "@material-ui/icons/YouTube";
 import Carousel from "../Carousel/Carousel";
- 
+
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   paper: {
-    width: "90%",
-    height: "80%",
+    width: "80%",
+    height: "70%",
     backgroundColor: "#39445a",
     border: "1px solid #282c34",
-    borderRadius: 10,
+
     color: "white",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(1, 1, 3),
@@ -114,7 +114,14 @@ export default function TransitionsModal({ children, media_type, id }) {
                   className="ContentModal__landscape"
                 />
                 <div className="ContentModal__about">
-                  <span className={(String(content.name).length > 25 || String(content.title).length > 25) ? "ContentModal__title__long" : "ContentModal__title"}>
+                  <span
+                    className={
+                      String(content.name).length > 25 ||
+                      String(content.title).length > 25
+                        ? "ContentModal__title__long"
+                        : "ContentModal__title"
+                    }
+                  >
                     {content.name || content.title} (
                     {(
                       content.first_air_date ||
@@ -124,7 +131,16 @@ export default function TransitionsModal({ children, media_type, id }) {
                     )
                   </span>
                   {content.tagline && (
-                    <i className={(String(content.name).length > 25 || String(content.title).length > 25) ? "tagline__long" : "tagline"}>{content.tagline}</i>
+                    <i
+                      className={
+                        String(content.name).length > 25 ||
+                        String(content.title).length > 25
+                          ? "tagline__long"
+                          : "tagline"
+                      }
+                    >
+                      {content.tagline}
+                    </i>
                   )}
 
                   <span className="ContentModal__description">

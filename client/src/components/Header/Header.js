@@ -9,7 +9,7 @@ const Header = () => {
   };
   return (
     <span onClick={handleClick} className="header">
-      TMDB
+      TMDb
     </span>
   );
 };

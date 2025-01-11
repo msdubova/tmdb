@@ -16,22 +16,29 @@ const Gallery = ({ id, media_type }) => {
         src={c.profile_path ? `${img_300}/${c.profile_path}` : noPicture}
         alt={c?.name}
         onDragStart={handleDragStart}
-        className={(credits.length < 5)?"carouselItem__img__few":"carouselItem__img"}
-        onClick={() => window.open(`https://www.google.com/search?q=${c.name}`, '_blank')}
+        className={
+          credits.length < 5 ? "carouselItem__img__few" : "carouselItem__img"
+        }
+        onClick={() =>
+          window.open(`https://www.google.com/search?q=${c.name}`, "_blank")
+        }
       />
       <b className="carouselItem__txt">{c?.name}</b>
     </div>
   ));
 
   const responsive = {
-    0: {
-      items: 3,
+    420: {
+      items: 2,
     },
     512: {
-      items: 5,
+      items: 3,
     },
     1024: {
-      items: 7,
+      items: 4,
+    },
+    1200: {
+      items: 5,
     },
   };
 
@@ -56,6 +63,7 @@ const Gallery = ({ id, media_type }) => {
       responsive={responsive}
       items={items}
       autoPlay
+      autoPlayInterval={1000}
     />
   );
 };
