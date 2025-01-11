@@ -7,20 +7,22 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import "./Search.css";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import CustomPagination from "../../components/Pagination/CustomPagination";
 import SingleContent from "../../components/SingleContent/SingleContent";
 import { useLocation } from "react-router-dom";
+
 const Search = () => {
   const [type, setType] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(1);
   const [content, setContent] = useState([]);
   const [numOfPages, setNumOfPages] = useState();
+  const [error, setError] = useState("");
   const location = useLocation();
+
   const darkTheme = createMuiTheme({
     palette: {
       type: "dark",
@@ -29,39 +31,56 @@ const Search = () => {
       },
     },
   });
+
+  const isValidInput = (input) => /^[A-Za-z0-9\s]+$/.test(input);
+
   useEffect(() => {
-    // Извлекаем query из URL
     const queryParams = new URLSearchParams(location.search);
     const query = queryParams.get("query");
 
     if (query) {
-      setSearchText(query); // Устанавливаем query в поле поиска
-      fetchSearch(query); // Выполняем поиск
+      setSearchText(query);
+      fetchSearch(query);
     }
-  }, [location.search]); // Следим за изменением location.search
-  //type=1 corresponds to "tv"; type=0 corresponds to "movie"
-  const fetchSearch = useCallback(async (queryOverride) => {
-    try {
-      const { data } = await axios.get(
-        `https://api.themoviedb.org/3/search/${type ? "tv" : "movie"}?api_key=${
-          process.env.REACT_APP_API_KEY
-        }&language=en-US&query=${
-          queryOverride || searchText
-        }&page=${page}&include_adult=false`
-      );
-      setContent(data.results);
-      setNumOfPages(data.total_pages);
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  }, [location.search]);
+
+  const fetchSearch = useCallback(
+    async (queryOverride) => {
+      if (!isValidInput(queryOverride || searchText)) {
+        setError("Please use only English letters and numbers.");
+        return;
+      } else {
+        setError("");
+      }
+
+      try {
+        const { data } = await axios.get(
+          `https://api.themoviedb.org/3/search/${
+            type ? "tv" : "movie"
+          }?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${
+            queryOverride || searchText
+          }&page=${page}&include_adult=false`
+        );
+        setContent(data.results.slice(0, 12));
+        setNumOfPages(data.total_pages);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [type, searchText, page]
+  );
 
   useEffect(() => {
     if (searchText.trim() !== "") {
       fetchSearch();
     }
-    // eslint-disable-next-line
-  }, [type, page]);
+  }, [type, page, searchText]);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      fetchSearch();
+    }
+  };
 
   return (
     <div>
@@ -74,6 +93,7 @@ const Search = () => {
             variant="filled"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <Button
             onClick={() => fetchSearch()}
@@ -83,6 +103,11 @@ const Search = () => {
             <SearchIcon fontSize="large" />
           </Button>
         </div>
+
+        {error && (
+          <div style={{ color: "red", marginTop: "10px" }}>{error}</div>
+        )}
+
         <Tabs
           value={type}
           indicatorColor="primary"
@@ -98,6 +123,7 @@ const Search = () => {
           <Tab style={{ width: "50%" }} label="Search TV Series" />
         </Tabs>
       </ThemeProvider>
+
       <div className="trending">
         {content &&
           content.map((c) => (
@@ -115,6 +141,7 @@ const Search = () => {
           !content &&
           (type ? <h2>No Series Found</h2> : <h2>No Movies Found</h2>)}
       </div>
+
       {numOfPages > 1 && (
         <CustomPagination setPage={setPage} numOfPages={numOfPages} />
       )}

@@ -2,6 +2,8 @@ import { Chip } from "@material-ui/core";
 import axios from "axios";
 import { useEffect } from "react";
 
+import "./Genres.css";
+
 const Genres = ({
   selectedGenres,
   setSelectedGenres,
@@ -9,10 +11,10 @@ const Genres = ({
   setGenres,
   type,
   setPage,
-  }) => {
+}) => {
   const handleAdd = (genre) => {
-    setSelectedGenres([...selectedGenres, genre]); //add that genre to selectedGenre array 
-    setGenres(genres.filter((g) => g.id !== genre.id)); //remove that genre from the original genres array
+    setSelectedGenres([...selectedGenres, genre]); // Добавляем жанр в выбранные
+    setGenres(genres.filter((g) => g.id !== genre.id)); // Убираем жанр из доступных
     setPage(1);
   };
 
@@ -20,8 +22,19 @@ const Genres = ({
     setSelectedGenres(
       selectedGenres.filter((selected) => selected.id !== genre.id)
     );
-    setGenres([...genres, genre]);
+    setGenres([...genres, genre]); // Добавляем жанр обратно в доступные
     setPage(1);
+  };
+
+  const handleKeyDown = (e, genre) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Чтобы избежать нежелательных действий при нажатии Enter
+      if (selectedGenres.includes(genre)) {
+        handleRemove(genre); // Если жанр уже выбран, удаляем его
+      } else {
+        handleAdd(genre); // Если жанр не выбран, добавляем его
+      }
+    }
   };
 
   const fetchGenres = async () => {
@@ -35,32 +48,48 @@ const Genres = ({
     fetchGenres();
 
     return () => {
-      setGenres({}); // want to unmount when we change the page section (trending, movies etc)
+      setGenres({}); // Убираем жанры при смене раздела
     };
     // eslint-disable-next-line
   }, []);
 
   return (
-    <div style={{ padding: "6px 0" }}>
+    <div className="genres">
+      {/* Выбранные жанры */}
       {selectedGenres.map((genre) => (
         <Chip
-          style={{ margin: 2 }}
+          style={{
+            margin: 6,
+            height: 32, // Фиксированная высота
+            borderRadius: 0, // Убираем сглаженные углы
+            fontWeight: "bold",
+          }}
           label={genre.name}
           key={genre.id}
           color="primary"
           clickable
-          size="small"
+          size="large"
           onDelete={() => handleRemove(genre)}
+          onKeyDown={(e) => handleKeyDown(e, genre)} // Обработчик для клавиши Enter
+          tabIndex={0} // Для того, чтобы элемент был доступен для фокуса
         />
       ))}
+      {/* Доступные жанры */}
       {genres.map((genre) => (
         <Chip
-          style={{ margin: 2 }}
+          style={{
+            margin: 6,
+            height: 32, // Фиксированная высота
+            borderRadius: 0,
+            fontWeight: "bold",
+          }}
           label={genre.name}
           key={genre.id}
           clickable
           size="small"
           onClick={() => handleAdd(genre)}
+          onKeyDown={(e) => handleKeyDown(e, genre)} // Обработчик для клавиши Enter
+          tabIndex={0} // Для того, чтобы элемент был доступен для фокуса
         />
       ))}
     </div>

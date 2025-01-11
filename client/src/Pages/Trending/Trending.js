@@ -11,6 +11,7 @@ import axios from "axios";
 import SingleContent from "../../components/SingleContent/SingleContent";
 import CustomPagination from "../../components/Pagination/CustomPagination";
 import { useHistory } from "react-router-dom";
+
 const Trending = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const history = useHistory();
@@ -20,6 +21,7 @@ const Trending = () => {
       history.push(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
   };
+
   const [page, setPage] = useState(1);
   const [content, setContent] = useState([]);
   const darkTheme = createMuiTheme({
@@ -30,26 +32,29 @@ const Trending = () => {
       },
     },
   });
-  //define function to get movie data
+
+  // Fetching the trending data
   const fetchTrending = async () => {
     const { data } = await axios.get(
       `https://api.themoviedb.org/3/trending/all/day?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
     );
-
-    setContent(data.results);
+    setContent(data.results.slice(0, 12));
   };
 
-  //actually run the fetching data function
   useEffect(() => {
     fetchTrending();
     // eslint-disable-next-line
   }, [page]);
 
-  //movies use 'title', tv-shows use 'name'
-  //movies use 'release date', tv-shows use 'first air date'
+  // Check if the Enter key is pressed before triggering search
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch(); // Trigger search when Enter is pressed
+    }
+  };
+
   return (
     <div>
-      {" "}
       <div className="">
         <ThemeProvider theme={darkTheme}>
           <div className="search" style={{ marginBottom: "20px" }}>
@@ -60,6 +65,7 @@ const Trending = () => {
               variant="filled"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown} // Only triggers search on Enter key
             />
             <Button
               onClick={handleSearch}

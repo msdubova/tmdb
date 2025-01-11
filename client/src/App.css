@@ -1,13 +1,12 @@
 * {
   scroll-behavior: smooth;
-  scrollbar-width: thin;
 }
 
 .app {
   min-height: 100vh;
-  background-color: #15284d;
+  background-color: #39445a;
   color: white;
-
+  background-color: #10234a;
   padding-bottom: 70px;
 }
 
@@ -31,12 +30,6 @@
 @media (max-width: 1000px) {
   .pageTitle {
     font-size: 6.4vw;
-  }
-}
-
-@media (min-width: 1800px) {
-  .pageTitle {
-    margin-top: 30px;
   }
 }
 

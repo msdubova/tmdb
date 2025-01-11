@@ -69,6 +69,11 @@ export default function TransitionsModal({ children, media_type, id }) {
     // eslint-disable-next-line
   }, []);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleOpen();
+    }
+  };
   return (
     <>
       <div
@@ -76,6 +81,8 @@ export default function TransitionsModal({ children, media_type, id }) {
         style={{ cursor: "pointer" }}
         color="inherit"
         onClick={handleOpen}
+        onKeyDown={handleKeyDown} // Событие для нажатия клавиш
+        tabIndex={0} // Обеспечиваем, чтобы элемент можно было фокусировать
       >
         {children}
       </div>

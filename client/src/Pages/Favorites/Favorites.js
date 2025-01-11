@@ -10,13 +10,12 @@ const Favorites = () => {
   const [page, setPage] = useState(1);
   const [numOfPages, setNumOfPages] = useState(1);
 
-  // Функция для получения данных о фильмах из API
   const fetchFavoriteMovies = async () => {
     const favoriteIds = JSON.parse(localStorage.getItem("favorites")) || [];
     console.log("Favorite movie IDs from localStorage:", favoriteIds);
 
     if (favoriteIds.length === 0) {
-      setIsLoading(false); // Если избранных нет, завершаем загрузку
+      setIsLoading(false);
       return;
     }
 
@@ -28,14 +27,13 @@ const Favorites = () => {
           )
           .catch((error) => {
             console.error(`Ошибка при запросе фильма с ID ${id}:`, error);
-            return null; // Возвращаем null, если ошибка
+            return null;
           })
       );
 
       const responses = await Promise.all(requests);
       console.log("Responses from API:", responses);
 
-      // Фильтруем null-ответы (ошибки)
       const movies = responses
         .filter((response) => response !== null)
         .map((response) => response.data);
@@ -43,11 +41,11 @@ const Favorites = () => {
       console.log("Fetched movies:", movies);
 
       setFavoriteMovies(movies);
-      setNumOfPages(Math.ceil(favoriteIds.length / 20)); // Делим на 20 фильмов на страницу
+      setNumOfPages(Math.ceil(favoriteIds.length / 20));
     } catch (error) {
       console.error("Ошибка при загрузке избранных фильмов:", error);
     } finally {
-      setIsLoading(false); // Завершаем загрузку
+      setIsLoading(false);
     }
   };
 
@@ -58,9 +56,9 @@ const Favorites = () => {
 
   return (
     <div className="favorites-page">
-      <span className="pageTitle">Избранное</span>
+      <span className="pageTitle">Favorites</span>
       {isLoading ? (
-        <div className="loading">Загрузка...</div>
+        <div className="loading">loading...</div>
       ) : favoriteMovies.length > 0 ? (
         <div className="trending">
           {favoriteMovies.map((movie) => (

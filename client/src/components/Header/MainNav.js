@@ -6,8 +6,8 @@ import TvIcon from "@material-ui/icons/Tv";
 import MovieIcon from "@material-ui/icons/Movie";
 import SearchIcon from "@material-ui/icons/Search";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
-import FavoriteIcon from "@mui/icons-material/Favorite"; // Используем иконку для избранного
-import { useHistory } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Иконка для избранного
+import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -17,13 +17,36 @@ const useStyles = makeStyles({
     backgroundColor: "#10203f",
     zIndex: 100,
   },
+  active: {
+    color: "#ff4081", // Цвет для активного элемента
+  },
+  inactive: {
+    color: "white", // Цвет для неактивных элементов
+  },
 });
 
 export default function SimpleBottomNavigation() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const history = useHistory();
+  const location = useLocation();
 
+  // useEffect для отслеживания маршрута
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setValue(0);
+    } else if (location.pathname === "/movies") {
+      setValue(1);
+    } else if (location.pathname === "/series") {
+      setValue(2);
+    } else if (location.pathname === "/search") {
+      setValue(3);
+    } else if (location.pathname === "/favorites") {
+      setValue(4);
+    }
+  }, [location]);
+
+  // useEffect для навигации при изменении value
   useEffect(() => {
     if (value === 0) {
       history.push("/");
@@ -34,7 +57,7 @@ export default function SimpleBottomNavigation() {
     } else if (value === 3) {
       history.push("/search");
     } else if (value === 4) {
-      history.push("/favorites"); // Исправленный путь
+      history.push("/favorites");
     }
   }, [value, history]);
 
@@ -48,29 +71,29 @@ export default function SimpleBottomNavigation() {
       className={classes.root}
     >
       <BottomNavigationAction
-        style={{ color: "white" }}
+        className={value === 0 ? classes.active : classes.inactive}
         label="Trending"
         icon={<WhatshotIcon />}
       />
       <BottomNavigationAction
-        style={{ color: "white" }}
+        className={value === 1 ? classes.active : classes.inactive}
         label="Movies"
         icon={<MovieIcon />}
       />
       <BottomNavigationAction
-        style={{ color: "white" }}
+        className={value === 2 ? classes.active : classes.inactive}
         label="TV Shows"
         icon={<TvIcon />}
       />
       <BottomNavigationAction
-        style={{ color: "white" }}
+        className={value === 3 ? classes.active : classes.inactive}
         label="Search"
         icon={<SearchIcon />}
       />
       <BottomNavigationAction
-        style={{ color: "white" }}
+        className={value === 4 ? classes.active : classes.inactive}
         label="Favorites"
-        icon={<FavoriteIcon />} // Используем иконку сердечка
+        icon={<FavoriteIcon />}
       />
     </BottomNavigation>
   );

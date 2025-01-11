@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
+    position: "absolute",
     fontWeight: "bold",
     fontSize: "20px", // Увеличиваем текст бейджа
     height: "25px", // Устанавливаем высоту бейджа
@@ -55,8 +56,16 @@ const SingleContent = ({
     setIsFavorite(!isFavorite);
   };
 
+  // Обработчик для нажатия клавиши Enter
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.stopPropagation(); // Предотвращаем всплытие события при нажатии Enter
+      handleFavoriteToggle(e); // Включаем или отключаем избранное при нажатии Enter
+    }
+  };
+
   return (
-    <ContentModal media_type={media_type} id={id}>
+    <ContentModal media_type={media_type} id={id} tabIndex={0}>
       <StyledBadge badgeContent={vote_average.toFixed(1)} vote={vote_average} />
       <img
         className="poster"
@@ -71,12 +80,16 @@ const SingleContent = ({
         {isFavorite ? (
           <FavoriteIcon
             onClick={handleFavoriteToggle}
+            onKeyDown={handleKeyDown} // Добавляем обработчик для клавиши Enter
             style={{ cursor: "pointer", color: "red" }}
+            tabIndex={0} // Добавляем возможность фокуса
           />
         ) : (
           <FavoriteBorderIcon
             onClick={handleFavoriteToggle}
+            onKeyDown={handleKeyDown} // Добавляем обработчик для клавиши Enter
             style={{ cursor: "pointer" }}
+            tabIndex={0} // Добавляем возможность фокуса
           />
         )}
       </span>

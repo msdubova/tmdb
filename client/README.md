@@ -1,138 +1,103 @@
 # Movie Project
 
-You will need to get an API key from TMDB: https://developers.themoviedb.org/3/getting-started/introduction and store it in a .env file as REACT_APP_API_KEY
+A modern frontend application for exploring movies and TV shows using the TMDB (The Movie Database) API. This interactive platform allows users to discover, search, and explore detailed information about their favorite content.
 
----
+## Features
 
-## Details
+- Browse popular, trending, and top-rated movies and TV shows
+- Comprehensive search functionality for movies and TV shows
+- Detailed content information including:
+  - Plot descriptions
+  - Cast information
+  - Trailers
+  - Release dates
+  - Ratings
+- Genre-based filtering system
+- Responsive design for all devices
+- Local storage-based favorites system
 
-This website is a frontend for <https://www.themoviedb.org/>'s API. It allows a user to search for movies and shows and view information about them. It also displays a list of trending, popular, and upcoming movies.
+## Pages
 
-## Key Features
+- **Trending**: Discover what's hot right now
+- **Movies**: Explore the world of cinema
+- **TV Shows**: Find your next binge-worthy series
+- **Search**: Find specific content
+- **Favorites**: Keep track of your must-watch list
 
-- Displays popular, trending, top rated movies and shows.
-- Search movies and shows using the searchbox.
-- Show movie details such as description, cast, trailers, release date and rating
-- Filter movies and shows by genres
+## Components
 
-## Key Parts
+- **Carousel**: Dynamic display of cast members
+- **ContentModal**: Detailed view of selected content
+- **Genres**: Interactive genre filtering system
+- **Header**: Application branding
+- **MainNav**: Primary navigation interface
+- **CustomPagination**: Page navigation system
+- **SingleContent**: Content card displaying key information
 
-It is comprised of the following parts
+## Installation
 
-### Pages
+1. Clone the repository:
 
-- Trending
-- Movies
-- TV Shows
-- Search
+```bash
+git clone https://github.com/msdubova/tmdb
+```
 
-### Components
+2. Install dependencies:
 
-React Components Include:
+```bash
+npm install
+```
 
-- Carousel -> Displays the cast members of the movie / show for the modal
-- ContentModal -> Opens the modal when a user clicks on a movie / show
-- Genres -> Allows the user to filter movies / shows by genre and updates the UI accordingly
-- Header -> Displays the name of the project
-- MainNav -> Displays the main navigation bar that allows the user to go to different parts of our applciation
-- CustomPagination -> Displays the pagination icons and allows the user to go to the next page and see more movies / shows
-- SingleContent -> Displays the poster, rating, title and release date for our individual movies and shows
+3. Configure environment variables:
+   - Create a `.env` file in the root directory
+   - Add your TMDB API key: 905f3f9624e460d90f12e0e8b7e07f56
 
-## Installation Instructions
+```
+REACT_APP_API_KEY=YOUR_API_KEY_HERE
+```
 
-To run this project locally, you will need to do the following:
+Note: Register at [TMDB](https://www.themoviedb.org/) to obtain your API key.
 
-1. Clone the repository `https://github.com/msdubova`
-2. Install the dependencies via: `npm install`
-3. create a .env file in the root directory which takes one entry
-   - REACT_APP_API_KEY = `YOUR_API_KEY_HERE`
-4. Run the project via: `npm start`
+4. Start the development server:
 
-## Roadmap
+```bash
+npm start
+```
 
-- [x] Show trending movies and TV shows
-- [x] Implement Search Movies functionality
-- [x] Implement Search Shows functionality
-- [x] Display movie details along with cast
-- [x] Filter movies by genres
-- [x] Filter shows by genres
-- [x] Display the rating and year for TV shows
-- [x] Display the rating and year for Movies
-- [x] Display TV show details
-- [x] Display movie details
-- [x] Pagination to load content
-- [x] General page responsiveness
-- [x] Adding TypeScript
-- [ ] Adding tests
-- [ ] Dark Mode / Light Mode theme switcher (very low priority)
+## Project Roadmap
 
----
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- [x] Implement trending content display
+- [x] Add movie search functionality
+- [x] Add TV show search functionality
+- [x] Integrate detailed content information
+- [x] Implement genre filtering
+- [x] Add pagination system
+- [x] Optimize responsive design
+- [x] Implement favorites system with local storage
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start`: Launch development server at http://localhost:3000
+- `npm run build`: Create production build
 
-### `npm start`
+## Technical Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React.js
+- Material-UI
+- TMDB API
+- Local Storage
+- Create React App
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Contributing
 
-### `npm test`
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Acknowledgments
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [TMDB](https://www.themoviedb.org/) for providing the API
+- [Material-UI](https://mui.com/) for the component library
+- [Create React App](https://create-react-app.dev/) for the project bootstrap
