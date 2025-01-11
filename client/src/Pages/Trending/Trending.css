@@ -1,5 +1,6 @@
 .trending {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
+  display: grid;
+  flex-wrap: wrap;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 20px;
+}

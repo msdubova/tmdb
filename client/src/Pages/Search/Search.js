@@ -7,6 +7,7 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import "./Search.css";
+import { useCallback } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -39,7 +40,7 @@ const Search = () => {
     }
   }, [location.search]); // Следим за изменением location.search
   //type=1 corresponds to "tv"; type=0 corresponds to "movie"
-  const fetchSearch = async (queryOverride) => {
+  const fetchSearch = useCallback(async (queryOverride) => {
     try {
       const { data } = await axios.get(
         `https://api.themoviedb.org/3/search/${type ? "tv" : "movie"}?api_key=${
@@ -53,7 +54,7 @@ const Search = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  });
 
   useEffect(() => {
     if (searchText.trim() !== "") {

@@ -1,5 +1,4 @@
 .search {
-  margin: 2vh 0;
   display: flex;
   width: 40%;
   margin-left: auto;
@@ -8,15 +7,10 @@
 
 @media (min-width: 2330px) {
   .search {
-    margin-top: 80px;
+    margin-top: 20px;
   }
 }
 
-@media (min-width: 2770px) {
-  .search {
-    margin-top: 100px;
-  }
-}
 @media (max-width: 900px) {
   .search {
     width: 100%;

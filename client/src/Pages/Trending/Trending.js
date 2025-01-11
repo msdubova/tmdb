@@ -3,8 +3,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import {
   Button,
   createMuiTheme,
-  Tab,
-  Tabs,
   TextField,
   ThemeProvider,
 } from "@material-ui/core";
@@ -52,8 +50,7 @@ const Trending = () => {
   return (
     <div>
       {" "}
-      <div>
-        <button>Watchlist</button>
+      <div className="">
         <ThemeProvider theme={darkTheme}>
           <div className="search" style={{ marginBottom: "20px" }}>
             <TextField

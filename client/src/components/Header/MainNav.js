@@ -6,6 +6,7 @@ import TvIcon from "@material-ui/icons/Tv";
 import MovieIcon from "@material-ui/icons/Movie";
 import SearchIcon from "@material-ui/icons/Search";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Используем иконку для избранного
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -13,7 +14,7 @@ const useStyles = makeStyles({
     width: "100%",
     position: "fixed",
     bottom: 0,
-    backgroundColor: "#2d313a",
+    backgroundColor: "#10203f",
     zIndex: 100,
   },
 });
@@ -32,6 +33,8 @@ export default function SimpleBottomNavigation() {
       history.push("/series");
     } else if (value === 3) {
       history.push("/search");
+    } else if (value === 4) {
+      history.push("/favorites"); // Исправленный путь
     }
   }, [value, history]);
 
@@ -63,6 +66,11 @@ export default function SimpleBottomNavigation() {
         style={{ color: "white" }}
         label="Search"
         icon={<SearchIcon />}
+      />
+      <BottomNavigationAction
+        style={{ color: "white" }}
+        label="Favorites"
+        icon={<FavoriteIcon />} // Используем иконку сердечка
       />
     </BottomNavigation>
   );
