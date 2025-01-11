@@ -6,7 +6,7 @@ import TvIcon from "@material-ui/icons/Tv";
 import MovieIcon from "@material-ui/icons/Movie";
 import SearchIcon from "@material-ui/icons/Search";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
-import FavoriteIcon from "@mui/icons-material/Favorite"; // Иконка для избранного
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -18,10 +18,10 @@ const useStyles = makeStyles({
     zIndex: 100,
   },
   active: {
-    color: "#ff4081", // Цвет для активного элемента
+    color: "#ff4081",
   },
   inactive: {
-    color: "white", // Цвет для неактивных элементов
+    color: "white",
   },
 });
 
@@ -31,7 +31,6 @@ export default function SimpleBottomNavigation() {
   const history = useHistory();
   const location = useLocation();
 
-  // useEffect для отслеживания маршрута
   useEffect(() => {
     if (location.pathname === "/") {
       setValue(0);
@@ -46,7 +45,6 @@ export default function SimpleBottomNavigation() {
     }
   }, [location]);
 
-  // useEffect для навигации при изменении value
   useEffect(() => {
     if (value === 0) {
       history.push("/");

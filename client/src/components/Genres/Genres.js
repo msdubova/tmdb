@@ -13,8 +13,8 @@ const Genres = ({
   setPage,
 }) => {
   const handleAdd = (genre) => {
-    setSelectedGenres([...selectedGenres, genre]); // Добавляем жанр в выбранные
-    setGenres(genres.filter((g) => g.id !== genre.id)); // Убираем жанр из доступных
+    setSelectedGenres([...selectedGenres, genre]);
+    setGenres(genres.filter((g) => g.id !== genre.id));
     setPage(1);
   };
 
@@ -22,17 +22,17 @@ const Genres = ({
     setSelectedGenres(
       selectedGenres.filter((selected) => selected.id !== genre.id)
     );
-    setGenres([...genres, genre]); // Добавляем жанр обратно в доступные
+    setGenres([...genres, genre]);
     setPage(1);
   };
 
   const handleKeyDown = (e, genre) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Чтобы избежать нежелательных действий при нажатии Enter
+      e.preventDefault();
       if (selectedGenres.includes(genre)) {
-        handleRemove(genre); // Если жанр уже выбран, удаляем его
+        handleRemove(genre);
       } else {
-        handleAdd(genre); // Если жанр не выбран, добавляем его
+        handleAdd(genre);
       }
     }
   };
@@ -48,20 +48,19 @@ const Genres = ({
     fetchGenres();
 
     return () => {
-      setGenres({}); // Убираем жанры при смене раздела
+      setGenres({});
     };
     // eslint-disable-next-line
   }, []);
 
   return (
     <div className="genres">
-      {/* Выбранные жанры */}
       {selectedGenres.map((genre) => (
         <Chip
           style={{
             margin: 6,
-            height: 32, // Фиксированная высота
-            borderRadius: 0, // Убираем сглаженные углы
+            height: 32,
+            borderRadius: 0,
             fontWeight: "bold",
           }}
           label={genre.name}
@@ -70,16 +69,16 @@ const Genres = ({
           clickable
           size="large"
           onDelete={() => handleRemove(genre)}
-          onKeyDown={(e) => handleKeyDown(e, genre)} // Обработчик для клавиши Enter
-          tabIndex={0} // Для того, чтобы элемент был доступен для фокуса
+          onKeyDown={(e) => handleKeyDown(e, genre)}
+          tabIndex={0}
         />
       ))}
-      {/* Доступные жанры */}
+
       {genres.map((genre) => (
         <Chip
           style={{
             margin: 6,
-            height: 32, // Фиксированная высота
+            height: 32,
             borderRadius: 0,
             fontWeight: "bold",
           }}
@@ -88,8 +87,8 @@ const Genres = ({
           clickable
           size="small"
           onClick={() => handleAdd(genre)}
-          onKeyDown={(e) => handleKeyDown(e, genre)} // Обработчик для клавиши Enter
-          tabIndex={0} // Для того, чтобы элемент был доступен для фокуса
+          onKeyDown={(e) => handleKeyDown(e, genre)}
+          tabIndex={0}
         />
       ))}
     </div>

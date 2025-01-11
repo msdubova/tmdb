@@ -11,13 +11,12 @@ const StyledBadge = withStyles((theme) => ({
   badge: {
     position: "absolute",
     fontWeight: "bold",
-    fontSize: "20px", // Увеличиваем текст бейджа
-    height: "25px", // Устанавливаем высоту бейджа
-    minWidth: "25px", // Устанавливаем минимальную ширину бейджа
-    padding: "15px", // Увеличиваем внутренние отступы
-    borderRadius: "8px", // Скругляем края бейджа
-    backgroundColor: (props) => (props.vote > 6 ? "#99b27f" : "#ca6144"), // Задаём фон в зависимости от рейтинга
-    color: "#fff", // Цвет текста
+    fontSize: "20px",
+    height: "25px",
+    minWidth: "25px",
+    padding: "15px",
+    borderRadius: "8px",
+    backgroundColor: (props) => (props.vote > 6 ? "#99b27f" : "#ca6144"),
   },
 }))(Badge);
 
@@ -29,38 +28,41 @@ const SingleContent = ({
   media_type,
   vote_average,
 }) => {
-  // Состояние для избранного
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Загрузка состояния избранного из localStorage
   useEffect(() => {
     const favoriteMovies = JSON.parse(localStorage.getItem("favorites")) || [];
-    setIsFavorite(favoriteMovies.includes(id));
-  }, [id]);
+    // Check if there is already a movie with the same id and name in favorites
+    setIsFavorite(
+      favoriteMovies.some((movie) => movie.id === id && movie.name === title)
+    );
+  }, [id, title]);
 
-  // Обработчик клика для изменения статуса избранного
+  // Handler for clicking to toggle favorite status
   const handleFavoriteToggle = (e) => {
-    e.stopPropagation(); // Предотвращаем открытие модального окна
+    e.stopPropagation(); // Prevent opening the modal window
     const favoriteMovies = JSON.parse(localStorage.getItem("favorites")) || [];
+    const movieData = { id, name: title };
+
     if (isFavorite) {
-      // Удаляем из избранного
+      // Remove from favorites
       const updatedFavorites = favoriteMovies.filter(
-        (movieId) => movieId !== id
+        (movie) => movie.id !== id || movie.name !== title
       );
       localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
     } else {
-      // Добавляем в избранное
-      favoriteMovies.push(id);
+      // Add to favorites
+      favoriteMovies.push(movieData);
       localStorage.setItem("favorites", JSON.stringify(favoriteMovies));
     }
     setIsFavorite(!isFavorite);
   };
 
-  // Обработчик для нажатия клавиши Enter
+  // Handler for pressing the Enter key
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.stopPropagation(); // Предотвращаем всплытие события при нажатии Enter
-      handleFavoriteToggle(e); // Включаем или отключаем избранное при нажатии Enter
+      e.stopPropagation(); // Prevent event bubbling when pressing Enter
+      handleFavoriteToggle(e); // Toggle favorite status on Enter key press
     }
   };
 
@@ -73,23 +75,24 @@ const SingleContent = ({
         alt={title}
       />
       <b className="title">{title}</b>
+      <span>{id}</span>
       <span className="subTitle">
         {media_type === "tv" ? "TV Series" : "Movie"}
         <span className="subTitle">{date}</span>
-        {/* Кнопка избранного */}
+        {/* Favorite button */}
         {isFavorite ? (
           <FavoriteIcon
             onClick={handleFavoriteToggle}
-            onKeyDown={handleKeyDown} // Добавляем обработчик для клавиши Enter
+            onKeyDown={handleKeyDown} // Add handler for Enter key
             style={{ cursor: "pointer", color: "red" }}
-            tabIndex={0} // Добавляем возможность фокуса
+            tabIndex={0} // Enable focus
           />
         ) : (
           <FavoriteBorderIcon
             onClick={handleFavoriteToggle}
-            onKeyDown={handleKeyDown} // Добавляем обработчик для клавиши Enter
+            onKeyDown={handleKeyDown} // Add handler for Enter key
             style={{ cursor: "pointer" }}
-            tabIndex={0} // Добавляем возможность фокуса
+            tabIndex={0} // Enable focus
           />
         )}
       </span>

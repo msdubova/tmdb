@@ -10,6 +10,7 @@ const Favorites = () => {
   const [page, setPage] = useState(1);
   const [numOfPages, setNumOfPages] = useState(1);
 
+  // Function to fetch favorite movies from localStorage and TMDb
   const fetchFavoriteMovies = async () => {
     const favoriteIds = JSON.parse(localStorage.getItem("favorites")) || [];
     console.log("Favorite movie IDs from localStorage:", favoriteIds);
@@ -20,36 +21,54 @@ const Favorites = () => {
     }
 
     try {
-      const requests = favoriteIds.slice((page - 1) * 20, page * 20).map((id) =>
-        axios
-          .get(
-            `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`
-          )
-          .catch((error) => {
-            console.error(`Ошибка при запросе фильма с ID ${id}:`, error);
-            return null;
-          })
-      );
+      // Fetch the movies based on IDs and their names from the API
+      const requests = favoriteIds
+        .slice((page - 1) * 20, page * 20)
+        .map((favorite) =>
+          axios
+            .get(
+              `https://api.themoviedb.org/3/movie/${favorite.id}?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`
+            )
+            .catch((error) => {
+              console.error(
+                `Error fetching movie with ID ${favorite.id}:`,
+                error
+              );
+              return null;
+            })
+        );
 
       const responses = await Promise.all(requests);
-      console.log("Responses from API:", responses);
+      console.log("API Responses:", responses);
 
-      const movies = responses
+      // Filter out null responses and make sure no duplicate movies are added based on both ID and name
+      const movies = [];
+      const seen = new Set(); // To track unique id-name pairs
+
+      responses
         .filter((response) => response !== null)
-        .map((response) => response.data);
+        .forEach((response) => {
+          const movie = response.data;
+          // Check if both ID and name combination is unique
+          const uniqueKey = `${movie.id}-${movie.title || movie.name}`;
+          if (!seen.has(uniqueKey)) {
+            seen.add(uniqueKey);
+            movies.push(movie);
+          }
+        });
 
       console.log("Fetched movies:", movies);
 
       setFavoriteMovies(movies);
       setNumOfPages(Math.ceil(favoriteIds.length / 20));
     } catch (error) {
-      console.error("Ошибка при загрузке избранных фильмов:", error);
+      console.error("Error fetching favorite movies:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Вызываем функцию загрузки фильмов при монтировании и при изменении страницы
+  // Trigger movie fetching on component mount or when the page changes
   useEffect(() => {
     fetchFavoriteMovies();
   }, [page]);
@@ -58,7 +77,7 @@ const Favorites = () => {
     <div className="favorites-page">
       <span className="pageTitle">Favorites</span>
       {isLoading ? (
-        <div className="loading">loading...</div>
+        <div className="loading">Loading...</div>
       ) : favoriteMovies.length > 0 ? (
         <div className="trending">
           {favoriteMovies.map((movie) => (
@@ -74,10 +93,10 @@ const Favorites = () => {
           ))}
         </div>
       ) : (
-        <h2 className="no-favorites">Нет избранных фильмов</h2>
+        <h2 className="no-favorites">No favorite movies found</h2>
       )}
 
-      {/* Пагинация */}
+      {/* Pagination */}
       {numOfPages > 1 && (
         <CustomPagination setPage={setPage} numOfPages={numOfPages} />
       )}

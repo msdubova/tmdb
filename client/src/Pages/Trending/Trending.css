@@ -1,43 +1,38 @@
 .trending {
   margin-top: 30px;
   display: grid;
-  grid-template-columns: repeat(
-    4,
-    1fr
-  ); /* 4 карточки в ряд по умолчанию (для десктопа) */
-  gap: 20px; /* Расстояние между карточками */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .trending .media {
-  transition: transform 0.3s ease, outline 0.3s ease; /* Плавный переход для эффекта */
+  transition: transform 0.3s ease, outline 0.3s ease;
 }
 
 .trending .media:hover {
-  transform: scale(1.05); /* Увеличение карточки при наведении */
-  outline: 2px solid white; /* Добавление обводки при ховере */
+  transform: scale(1.05);
+  outline: 2px solid white;
 }
 
-/* Мобильные устройства */
 @media (max-width: 600px) {
   .trending {
-    grid-template-columns: 1fr; /* 2 карточки в ряд на мобильных устройствах */
+    grid-template-columns: 1fr;
   }
 }
 @media (min-width: 601px) and (max-width: 700px) {
   .trending {
-    grid-template-columns: repeat(2, 1fr); /* 3 карточки в ряд на планшетах */
-  }
-}
-/* Планшеты */
-@media (min-width: 701px) and (max-width: 1024px) {
-  .trending {
-    grid-template-columns: repeat(3, 1fr); /* 3 карточки в ряд на планшетах */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Десктопы */
+@media (min-width: 701px) and (max-width: 1024px) {
+  .trending {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (min-width: 1025px) {
   .trending {
-    grid-template-columns: repeat(4, 1fr); /* 4 карточки в ряд на десктопах */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
