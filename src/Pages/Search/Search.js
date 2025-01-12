@@ -7,7 +7,7 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import "./Search.css";
-import { useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import axios from "axios";
 import CustomPagination from "../../components/Pagination/CustomPagination";
@@ -34,58 +34,82 @@ const Search = () => {
 
   const isValidInput = (input) => /^[A-Za-z0-9\s]+$/.test(input);
 
+  // First useEffect: Handles URL parameter changes
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const query = queryParams.get("query");
 
     if (query) {
       setSearchText(query);
-      fetchSearch(query);
-    }
-  }, [location.search]);
+      const fetchFromUrl = async () => {
+        if (!isValidInput(query)) {
+          setError("Please use only English letters and numbers.");
+          return;
+        }
 
-  const fetchSearch = useCallback(
-    async (queryOverride) => {
-      if (!isValidInput(queryOverride || searchText)) {
+        try {
+          const { data } = await axios.get(
+            `https://api.themoviedb.org/3/search/${
+              type ? "tv" : "movie"
+            }?api_key=${
+              process.env.REACT_APP_API_KEY
+            }&language=en-US&query=${query}&page=${page}&include_adult=false`
+          );
+          setContent(data.results.slice(0, 12));
+          setNumOfPages(data.total_pages);
+          setError("");
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchFromUrl();
+    }
+  }, [location.search, type, page]);
+
+  // Second useEffect: Handles updates based on `searchText`, `type`, or `page`
+  useEffect(() => {
+    const fetchSearch = async () => {
+      if (searchText.trim() === "") return;
+
+      if (!isValidInput(searchText)) {
         setError("Please use only English letters and numbers.");
         return;
-      } else {
-        setError("");
       }
 
       try {
         const { data } = await axios.get(
           `https://api.themoviedb.org/3/search/${
             type ? "tv" : "movie"
-          }?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&query=${
-            queryOverride || searchText
-          }&page=${page}&include_adult=false`
+          }?api_key=${
+            process.env.REACT_APP_API_KEY
+          }&language=en-US&query=${searchText}&page=${page}&include_adult=false`
         );
         setContent(data.results.slice(0, 12));
         setNumOfPages(data.total_pages);
+        setError("");
       } catch (error) {
         console.error(error);
       }
-    },
-    [type, searchText, page]
-  );
+    };
 
-  useEffect(() => {
-    if (searchText.trim() !== "") {
-      fetchSearch();
-    }
+    fetchSearch();
   }, [type, page, searchText]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      fetchSearch();
+      event.preventDefault();
     }
+  };
+
+  const handleSearch = () => {
+    // Searching will automatically trigger due to useEffect monitoring searchText
   };
 
   return (
     <div>
       <ThemeProvider theme={darkTheme}>
-        <div className="search">
+        <div className="search" aria-label="Search Section">
           <TextField
             style={{ flex: 1 }}
             className="searchBox"
@@ -94,18 +118,28 @@ const Search = () => {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={handleKeyDown}
+            inputProps={{
+              "aria-label": "Enter search text",
+            }}
           />
           <Button
-            onClick={() => fetchSearch()}
+            onClick={handleSearch}
             variant="contained"
             style={{ marginLeft: 10 }}
+            aria-label="Search Button"
           >
             <SearchIcon fontSize="large" />
           </Button>
         </div>
 
         {error && (
-          <div style={{ color: "red", marginTop: "10px" }}>{error}</div>
+          <div
+            style={{ color: "red", marginTop: "10px" }}
+            role="alert"
+            aria-live="assertive"
+          >
+            {error}
+          </div>
         )}
 
         <Tabs
@@ -117,14 +151,22 @@ const Search = () => {
             setPage(1);
           }}
           style={{ paddingBottom: 5 }}
-          aria-label="disabled tabs example"
+          aria-label="Search Type Tabs"
         >
-          <Tab style={{ width: "50%" }} label="Search Movies" />
-          <Tab style={{ width: "50%" }} label="Search TV Series" />
+          <Tab
+            style={{ width: "50%" }}
+            label="Search Movies"
+            aria-label="Search Movies Tab"
+          />
+          <Tab
+            style={{ width: "50%" }}
+            label="Search TV Series"
+            aria-label="Search TV Series Tab"
+          />
         </Tabs>
       </ThemeProvider>
 
-      <div className="trending">
+      <div className="trending" aria-label="Search Results Section">
         {content &&
           content.map((c) => (
             <SingleContent
@@ -135,15 +177,24 @@ const Search = () => {
               date={c.first_air_date || c.release_date}
               media_type={type ? "tv" : "movie"}
               vote_average={c.vote_average}
+              aria-label={`Result: ${c.title || c.name}`}
             />
           ))}
         {searchText &&
           !content &&
-          (type ? <h2>No Series Found</h2> : <h2>No Movies Found</h2>)}
+          (type ? (
+            <h2 aria-live="polite">No Series Found</h2>
+          ) : (
+            <h2 aria-live="polite">No Movies Found</h2>
+          ))}
       </div>
 
       {numOfPages > 1 && (
-        <CustomPagination setPage={setPage} numOfPages={numOfPages} />
+        <CustomPagination
+          setPage={setPage}
+          numOfPages={numOfPages}
+          aria-label="Pagination for search results"
+        />
       )}
     </div>
   );

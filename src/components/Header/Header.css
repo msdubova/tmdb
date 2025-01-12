@@ -6,16 +6,25 @@
   text-transform: uppercase;
   background-color: #10203f;
   font-family: "Montserrat", sans-serif;
-  font-size: 5vw;
+  font-size: 2vw;
   padding: 15px;
 
   color: white;
   z-index: 45vh;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1300px) {
   .header {
-    padding-top: 15px;
-    font-size: 6.4vw;
+    font-size: 3vw;
+  }
+}
+@media (max-width: 800px) {
+  .header {
+    font-size: 4vw;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    font-size: 5vw;
   }
 }
