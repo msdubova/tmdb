@@ -29,45 +29,100 @@ const SingleContent = ({
   vote_average,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [contentDetails, setContentDetails] = useState(null);
 
   useEffect(() => {
-    const favoriteMovies = JSON.parse(localStorage.getItem("favorites")) || [];
-    // Check if there is already a movie with the same id and name in favorites
-    setIsFavorite(
-      favoriteMovies.some((movie) => movie.id === id && movie.name === title)
-    );
-  }, [id, title]);
+    const fetchContentDetails = async () => {
+      try {
+        const contentType = media_type === "tv" ? "tv" : "movie";
+        const response = await fetch(
+          `https://api.themoviedb.org/3/${contentType}/${id}?api_key=${process.env.REACT_APP_API_KEY}`
+        );
 
-  // Handler for clicking to toggle favorite status
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setContentDetails(data);
+
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const isInFavorites = favorites.some(
+          (item) =>
+            item.id === id &&
+            item.media_type === media_type &&
+            item.release_date === date
+        );
+        setIsFavorite(isInFavorites);
+      } catch (error) {
+        console.error("Error fetching content details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContentDetails();
+  }, [id, media_type, date]);
+
   const handleFavoriteToggle = (e) => {
-    e.stopPropagation(); // Prevent opening the modal window
-    const favoriteMovies = JSON.parse(localStorage.getItem("favorites")) || [];
-    const movieData = { id, name: title };
+    e.stopPropagation();
 
-    if (isFavorite) {
-      // Remove from favorites
-      const updatedFavorites = favoriteMovies.filter(
-        (movie) => movie.id !== id || movie.name !== title
-      );
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-    } else {
-      // Add to favorites
-      favoriteMovies.push(movieData);
-      localStorage.setItem("favorites", JSON.stringify(favoriteMovies));
+    if (isLoading || !contentDetails) {
+      console.log("Still loading or content details not available");
+      return;
     }
-    setIsFavorite(!isFavorite);
+
+    try {
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const contentInfo = {
+        id,
+        media_type,
+        title,
+        release_date: date,
+        posterPath: poster,
+        external_ids: contentDetails.external_ids || {},
+      };
+
+      if (isFavorite) {
+        const updatedFavorites = favorites.filter(
+          (item) =>
+            !(
+              item.id === id &&
+              item.media_type === media_type &&
+              item.release_date === date
+            )
+        );
+        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+        setIsFavorite(false);
+      } else {
+        const contentExists = favorites.some(
+          (item) =>
+            item.id === id &&
+            item.media_type === media_type &&
+            item.release_date === date
+        );
+
+        if (!contentExists) {
+          const updatedFavorites = [...favorites, contentInfo];
+          localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+          setIsFavorite(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
   };
 
-  // Handler for pressing the Enter key
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.stopPropagation(); // Prevent event bubbling when pressing Enter
-      handleFavoriteToggle(e); // Toggle favorite status on Enter key press
+      e.stopPropagation();
+      handleFavoriteToggle(e);
     }
   };
 
   return (
-    <ContentModal media_type={media_type} id={id} tabIndex={0}>
+    <ContentModal media_type={media_type} id={id}>
       <StyledBadge badgeContent={vote_average.toFixed(1)} vote={vote_average} />
       <img
         className="poster"
@@ -75,26 +130,33 @@ const SingleContent = ({
         alt={title}
       />
       <b className="title">{title}</b>
-      <span>{id}</span>
       <span className="subTitle">
         {media_type === "tv" ? "TV Series" : "Movie"}
         <span className="subTitle">{date}</span>
-        {/* Favorite button */}
-        {isFavorite ? (
-          <FavoriteIcon
-            onClick={handleFavoriteToggle}
-            onKeyDown={handleKeyDown} // Add handler for Enter key
-            style={{ cursor: "pointer", color: "red" }}
-            tabIndex={0} // Enable focus
-          />
-        ) : (
-          <FavoriteBorderIcon
-            onClick={handleFavoriteToggle}
-            onKeyDown={handleKeyDown} // Add handler for Enter key
-            style={{ cursor: "pointer" }}
-            tabIndex={0} // Enable focus
-          />
-        )}
+        <button
+          onClick={handleFavoriteToggle}
+          onKeyDown={handleKeyDown}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          disabled={isLoading}
+        >
+          {isFavorite ? (
+            <FavoriteIcon
+              sx={{ color: "red" }}
+              aria-hidden="true"
+              focusable="false"
+            />
+          ) : (
+            <FavoriteBorderIcon aria-hidden="true" focusable="false" />
+          )}
+        </button>
       </span>
     </ContentModal>
   );
